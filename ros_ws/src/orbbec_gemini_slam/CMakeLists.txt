@@ -19,6 +19,7 @@ catkin_install_python(PROGRAMS
   scripts/stm32_serial_bridge.py
   scripts/keyboard_teleop.py
   scripts/simple_explorer.py
+  scripts/print_ultrasonic.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

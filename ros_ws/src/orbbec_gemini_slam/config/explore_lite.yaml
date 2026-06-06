@@ -1,0 +1,19 @@
+# =============================================================
+# explore_lite.yaml — 全自主探索参数
+# ZYSTM32-A1 + D435
+# =============================================================
+
+# 探索前沿
+robot_base_frame: camera_link
+costmap_topic: /move_base/global_costmap/costmap
+costmap_updates_topic: /move_base/global_costmap/costmap_updates
+visualize: true
+
+# 探索边界
+costmap_frontier_division: 1
+frontier_travel_point: 0.0
+
+# 其他
+potential_scale: 3.0
+gain_scale: 1.0
+min_frontier_size: 0.5

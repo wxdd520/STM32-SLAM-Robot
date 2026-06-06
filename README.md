@@ -1,8 +1,8 @@
-# ZYSTM32-A1 全自主探索 SLAM 机器人 🤖
+# ZYSTM32-A1: ROS SLAM Robot with STM32 Ultrasonic Avoidance 🤖
 
-> **STM32F103VC + ROS Noetic + RTAB-Map + RealSense D435**
+> **ZYSTM32-A1 亚克力四驱底盘 + STM32F103VC 超声波避障 + ROS Noetic RTAB-Map SLAM**
 >
-> 一款基于 STM32 超声波避障底盘、搭载 Intel RealSense D435 深度相机、运行 RTAB-Map RGB-D SLAM 的全自主建图机器人。
+> 一款低成本、开箱即用的 ROS SLAM 机器人：STM32 负责底层电机驱动与超声波避障，上位机运行 RTAB-Map RGB-D SLAM 实时建图，支持键盘遥控、全自主探索和导航。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Ubuntu%2020.04-blue)
@@ -143,95 +143,58 @@ keyboard_teleop.py ──→ /cmd_vel (geometry_msgs/Twist)
 
 ## 🚀 快速开始
 
-### 1. 环境依赖
-
-**操作系统:** Ubuntu 20.04 (Focal Fossa)
-
-```bash
-# ROS Noetic（推荐 desktop-full）
-sudo apt install ros-noetic-desktop-full
-
-# RealSense SDK + ROS 驱动
-sudo apt install ros-noetic-realsense2-camera ros-noetic-realsense2-description
-
-# RTAB-Map
-sudo apt install ros-noetic-rtabmap ros-noetic-rtabmap-ros \
-                 ros-noetic-rtabmap-viz ros-noetic-rtabmap-rviz-plugins \
-                 ros-noetic-rtabmap-launch ros-noetic-rtabmap-slam \
-                 ros-noetic-rtabmap-sync ros-noetic-rtabmap-util
-
-# STM32 交叉编译工具链
-sudo apt install gcc-arm-none-eabi binutils-arm-none-eabi
-
-# STM32 串口烧录工具
-sudo apt install stm32flash
-
-# Python 依赖
-pip3 install pyserial
-```
-
-**验证安装:**
-
-```bash
-which arm-none-eabi-gcc    # → /usr/bin/arm-none-eabi-gcc
-which stm32flash           # → /usr/bin/stm32flash
-which roscore              # → /opt/ros/noetic/bin/roscore
-rosrun rtabmap_slam rtabmap --version  # → 0.21.x
-```
-
-### 2. 克隆项目
+### 1. 克隆项目
 
 ```bash
 git clone https://github.com/your-username/ZYSTM32-A1.git
 cd ZYSTM32-A1
 ```
 
-### 3. 编译 STM32 固件并烧录
+### 2. 一键部署
 
 ```bash
-cd firmware/USER
-
-# 编译
-make clean && make
-
-# 一键烧录（免跳线帽，通过 CH340 RTS/DTR 自动控制）
-make flash
+bash install.sh
 ```
 
-烧录成功后会看到串口提示，`screen /dev/ttyUSB0 115200` 输入 `H` 回车可看到帮助菜单。
+`install.sh` 会自动完成：
+1. ✅ 检查并安装所有依赖（ROS、工具链、Python包）
+2. ✅ 编译 STM32 固件
+3. ✅ 编译 ROS catkin 工作区
+4. ✅ 验证所有组件
 
-> ℹ️ **关于自动烧录原理：**
-> `flash_auto.py` 通过 CH340 的 RTS/DTR 引脚模拟 BOOT0 和 RESET 信号，
-> 自动让 STM32 进入系统存储器 bootloader，无需手动拨动跳线帽。
-> 如果自动烧录失败，请参考[手动烧录](#手动烧录-备用方案)章节。
-
-### 4. 编译 ROS 工作区
+### 3. 烧录固件
 
 ```bash
-cd ros_ws
-source /opt/ros/noetic/setup.bash
-catkin_make
+cd firmware/USER && make flash
 ```
 
-### 5. 一键启动 SLAM
+### 4. 运行（三种方式）
 
 ```bash
-# 方式一：使用启动脚本
-cd ..
+# 方式一：交互式菜单（推荐新手）
+bash scripts/run.sh
+
+# 方式二：一键启动 SLAM
 bash scripts/start_slam.sh
 
-# 方式二：手动启动
+# 方式三：手动
 source scripts/setup_env.sh
 roslaunch orbbec_gemini_slam zystm32_slam.launch
 ```
 
-启动后你将看到：
-1. STM32 串口桥接节点连接小车
-2. D435 深度相机开始采集
-3. RTAB-Map 开始建图（RViz 中可看到实时点云）
-4. 键盘遥控窗口已就绪
+### `run.sh` 快速命令
 
-用 **WASDQE** 控制小车建图，**ESC** 退出并保存地图。
+```bash
+bash scripts/run.sh serial     # 串口直连测试
+bash scripts/run.sh bridge     # ROS 串口桥接
+bash scripts/run.sh slam       # SLAM 建图 + 键盘遥控
+bash scripts/run.sh auto       # 全自主探索
+bash scripts/run.sh nav        # 导航模式
+bash scripts/run.sh test       # 快速功能验证
+bash scripts/run.sh flash      # 编译并烧录固件
+```
+
+> 💡 **所有脚本自动检测项目路径，可放在任意目录使用。**
 
 ---
 
@@ -338,6 +301,11 @@ stm32flash -w zystm32_a1_slam.bin -v -g 0x08000000 /dev/ttyUSB0
 | `config/gemini_rtabmap.rviz` | RViz 预设视图配置 |
 | `config/gemini_left.yaml` | Gemini 左目相机标定 |
 | `config/gemini_right.yaml` | Gemini 右目相机标定 |
+| `config/costmap_common.yaml` | move_base 通用代价地图参数 |
+| `config/costmap_global.yaml` | 全局代价地图参数 |
+| `config/costmap_local.yaml` | 局部代价地图参数 |
+| `config/move_base.yaml` | move_base 导航参数 (DWA) |
+| `config/explore_lite.yaml` | explore_lite 全自主探索参数 |
 
 ### 关键 ROS 话题
 
@@ -502,6 +470,7 @@ ZYSTM32-A1 支持三种模式切换方式：
 
 ```
 ZYSTM32-A1/
+├── install.sh                    ← 一键部署脚本（安装依赖+编译）
 ├── firmware/                     ← STM32 下位机固件
 │   ├── USER/                     ← 用户代码入口
 │   │   ├── main.c               ← 主程序（435行）：串口解析、避障、模式切换
@@ -529,13 +498,14 @@ ZYSTM32-A1/
 │
 ├── ros_ws/                       ← ROS 工作区
 │   └── src/orbbec_gemini_slam/  ← ROS 功能包
-│       ├── launch/              ← 启动文件（.launch）
-│       ├── scripts/             ← Python 节点
-│       ├── config/              ← RViz 配置 + 相机标定
+│       ├── launch/              ← 启动文件（8个 .launch）
+│       ├── scripts/             ← Python 节点（6个）+ 测试脚本
+│       ├── config/              ← RViz 配置 + 相机标定 + 导航参数
 │       ├── CMakeLists.txt       ← ROS 编译配置
 │       └── package.xml          ← 功能包描述
 │
 ├── scripts/                      ← 环境配置与启动脚本
+│   ├── run.sh                   ← 统一入口（交互式菜单 / 直接命令）
 │   ├── setup_env.sh             ← source 它配置 ROS 环境
 │   └── start_slam.sh            ← 一键启动 SLAM
 │
@@ -633,8 +603,8 @@ rospack profile
 - [x] RTAB-Map RGB-D SLAM 建图
 - [x] 键盘遥控
 - [x] 模式切换（AUTO/MANUAL）
-- [ ] 自动探索导航（explore_lite + move_base）
-- [ ] 基于已建地图的导航（AMCL + path planning）
+- [x] 自动探索导航（explore_lite + move_base）
+- [x] 基于已建地图的导航（move_base + 路径规划）
 - [ ] Web 端遥控界面
 - [ ] 多机器人协同建图
 - [ ] 2D LiDAR 融合（RPLIDAR 等）

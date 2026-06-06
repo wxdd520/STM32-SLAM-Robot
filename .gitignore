@@ -10,6 +10,7 @@ firmware/USER/*.o
 ros_ws/build/
 ros_ws/devel/
 ros_ws/install/
+ros_ws/.catkin_workspace
 
 # Python cache
 __pycache__/
@@ -30,3 +31,9 @@ Thumbs.db
 # ROS
 .ros/
 *.bag
+
+# Local config (not for public)
+.env
+.env.*
+reasonix.toml
+.codegraph/

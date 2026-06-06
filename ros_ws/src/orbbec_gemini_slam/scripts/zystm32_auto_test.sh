@@ -133,7 +133,8 @@ fi
 # ============================================================
 header "编译"
 
-CATKIN_WS="$HOME/桌面/Slam/catkin_ws"
+# 自动检测 catkin 工作区路径（相对于脚本位置）
+CATKIN_WS="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 if [ -d "$CATKIN_WS" ]; then
     source "$CATKIN_WS/devel/setup.bash" 2>/dev/null || true
     (cd "$CATKIN_WS" && catkin_make) || warn "编译有警告"

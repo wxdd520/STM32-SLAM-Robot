@@ -1,0 +1,63 @@
+# =============================================================
+# move_base.yaml — move_base 导航参数
+# ZYSTM32-A1 差速小车
+# =============================================================
+
+# 控制频率
+controller_frequency: 5.0
+planner_frequency: 1.0
+planner_patience: 3.0
+controller_patience: 5.0
+
+# 恢复行为
+recovery_behavior_enabled: true
+conservative_reset_dist: 1.0
+clearing_rotation_allowed: true
+
+# ===== 全局规划器 =====
+NavfnROS:
+  allow_unknown: true
+  default_tolerance: 0.3
+  visualize_potential: false
+
+# ===== 局部规划器 (DWA) =====
+DWAPlannerROS:
+  # 速度限制
+  max_vel_x: 0.5
+  min_vel_x: -0.2
+  max_vel_y: 0.0
+  min_vel_y: 0.0
+  max_vel_trans: 0.5
+  min_vel_trans: 0.05
+  max_vel_theta: 1.0
+  min_vel_theta: 0.1
+
+  # 加速度限制
+  acc_lim_x: 1.5
+  acc_lim_y: 0.0
+  acc_lim_theta: 2.0
+
+  # 目标容忍度
+  xy_goal_tolerance: 0.15
+  yaw_goal_tolerance: 0.10
+  latch_xy_goal_tolerance: true
+
+  # 前向模拟
+  sim_time: 2.0
+  sim_granularity: 0.025
+  vx_samples: 10
+  vy_samples: 1
+  vtheta_samples: 20
+
+  # 轨迹评分
+  path_distance_bias: 32.0
+  goal_distance_bias: 24.0
+  occdist_scale: 0.1
+  forward_point_distance: 0.325
+  stop_time_buffer: 0.2
+  scaling_speed: 0.25
+  max_scaling_factor: 0.2
+
+  # 振荡抑制
+  oscillation_reset_dist: 0.15
+  oscillation_reset_angle: 0.2

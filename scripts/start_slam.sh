@@ -1,9 +1,11 @@
 #!/bin/bash
 # =========================================================
-# ZYSTM32-A1 一键启动
+# ZYSTM32-A1 一键启动 SLAM
 # =========================================================
 
-PROJECT_DIR="$HOME/桌面/ZYSTM32-A1"
+# 自动检测项目根目录
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo "================================================"
 echo "  ZYSTM32-A1 SLAM 一键启动"
@@ -17,15 +19,15 @@ echo "  4. RTAB-Map RGB-D SLAM + RViz"
 echo "  5. 键盘遥控 (WASDQE)"
 echo ""
 
-# Source environment
+# Source 环境
 source "$PROJECT_DIR/scripts/setup_env.sh"
 
-# Start roscore if not running
+# 启动 roscore（如果没有在运行）
 if ! pgrep -x roscore > /dev/null 2>&1; then
     echo "▶ 启动 roscore..."
     roscore &
     sleep 3
 fi
 
-# Launch everything
+# 启动 SLAM
 roslaunch orbbec_gemini_slam zystm32_slam.launch

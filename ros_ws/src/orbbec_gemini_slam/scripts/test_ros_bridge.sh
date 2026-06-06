@@ -2,18 +2,19 @@
 # 快速测试 ROS → STM32 通信
 # 自动 source 环境，通过 systemd-run --user 绕过 /dev/ttyUSB0 命名空间隔离
 
+# 自动检测项目根目录
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+
 source /opt/ros/noetic/setup.bash
-# 新项目位置:
-source ~/桌面/ZYSTM32-A1/ros_ws/devel/setup.bash 2>/dev/null
-# 旧位置兼容:
-# source ~/桌面/Slam/catkin_ws/devel/setup.bash 2>/dev/null
+source "$PROJECT_DIR/ros_ws/devel/setup.bash" 2>/dev/null
 
 echo "==================== ROS → STM32 测试 ===================="
 echo ""
-echo "  新固件 (SONIC+ROS)："
+echo "  固件 (SONIC+ROS)："
 echo "  · 默认 AUTO 模式 (超声波舵机扫描避障)"
 echo "  · ROS 发指令 → 自动切 MANUAL"
-echo "  · 3s 无 ROS 指令 → 回到 AUTO"
+echo "  · 5s 无 ROS 指令 → 回到 AUTO"
 echo ""
 echo "=========================================================="
 echo ""

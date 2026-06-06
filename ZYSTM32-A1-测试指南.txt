@@ -1,0 +1,199 @@
+============================================================
+  ZYSTM32-A1 全自主探索 — 测试指南
+  最后更新: 2026-06-06
+  项目位置: 任意 (git clone 后的目录)
+============================================================
+
+前置条件：
+  git clone <repo-url> ZYSTM32-A1
+  cd ZYSTM32-A1
+  bash install.sh          ← 一键部署（安装依赖+编译固件+编译ROS）
+
+所有命令均在项目根目录下执行。
+
+
+一、串口直接测试（不需要ROS）
+------------------------------------------------------
+
+  # 自动检测串口
+  screen /dev/ttyUSB0 115200
+
+  # 常用命令:
+  #   H 回车 → 看帮助
+  #   D 回车 → 测距
+  #   A 回车 → 切到自主避障
+  #   M 回车 → 切到手动模式
+  #   F 50 回车 → 前进
+  #   S 回车 → 停止
+  #   Ctrl+A 然后 K 退出 screen
+
+  # 或使用 Python 测试脚本:
+  python3 tools/test_stm32.py
+
+
+二、ROS 通信测试
+------------------------------------------------------
+
+  ▸ 方式一（推荐 — 统一菜单）:
+    bash scripts/run.sh
+    # 选择 3 → 自动启动桥接 + 显示 rostopic 命令示例
+
+  ▸ 方式二（手动分步）:
+
+    终端1 — ROS Master + 桥接:
+      source scripts/setup_env.sh
+      roscore &
+      rosrun orbbec_gemini_slam stm32_serial_bridge.py
+
+    终端2 — 发指令:
+      source /opt/ros/noetic/setup.bash
+
+      # 前进
+      rostopic pub /cmd_vel geometry_msgs/Twist '{linear: {x: 0.3}}' -r 3
+
+      # 后退
+      rostopic pub /cmd_vel geometry_msgs/Twist '{linear: {x: -0.3}}' -r 3
+
+      # 原地左转
+      rostopic pub /cmd_vel geometry_msgs/Twist '{angular: {z: 0.6}}' -r 3
+
+      # 原地右转
+      rostopic pub /cmd_vel geometry_msgs/Twist '{angular: {z: -0.6}}' -r 3
+
+      # 前进+左转 (画弧)
+      rostopic pub /cmd_vel geometry_msgs/Twist '{linear: {x: 0.15}, angular: {z: 0.4}}' -r 3
+
+      # 停车
+      rostopic pub /cmd_vel geometry_msgs/Twist '{linear: {x: 0}}' -1
+
+  ▸ 方式三（systemd-run 绕过权限）:
+    cd ros_ws/src/orbbec_gemini_slam/scripts
+    bash test_ros_bridge.sh
+
+  ▸ 检查话题:
+    rostopic list                    # 列出所有话题
+    rostopic echo /cmd_vel -n3       # 查看当前速度指令
+
+
+三、模式切换
+------------------------------------------------------
+
+  AUTO (自主避障)       D4 LED 亮 — 超声波+舵机扫描避障
+  MANUAL (ROS/串口)     D3 LED 亮 — 听从 ROS 或串口指令
+
+  ┌──────────┬──────────────────────┬─────────────────────┐
+  │  方式     │  切到 MANUAL          │  切到 AUTO           │
+  ├──────────┼──────────────────────┼─────────────────────┤
+  │  按键     │  按一下 KEY (蜂鸣器响)   │  再按一下 KEY         │
+  │  自动     │  ROS 发运动指令时       │  5 秒无 ROS 指令      │
+  │  串口命令  │  发 M 回车              │  发 A 回车            │
+  └──────────┴──────────────────────┴─────────────────────┘
+
+  三种方式任意切换，LED 实时显示当前模式。
+  最常用：按一下按键切 MANUAL → 遥控建图 → 按一下切回 AUTO 避障。
+
+
+四、SLAM 建图 + ROS 遥控
+------------------------------------------------------
+
+  架构：STM32 超声波避障 + ROS 串口控制 + RTAB-Map 实时建图
+
+  ▸ 一键启动（推荐）:
+    bash scripts/run.sh
+    # 选择 4 → 自动启动 roscore + 串口桥接 + D435 + RTAB-Map + 键盘遥控
+
+  ▸ 或手动:
+    source scripts/setup_env.sh
+    bash scripts/start_slam.sh
+
+  ▸ 键盘控制:
+    WASD 前后左右, QE 原地旋, 空格停, +/-调速, ESC退出
+
+  ▸ 也可以用 rostopic 直接发指令:
+    source /opt/ros/noetic/setup.bash
+    rostopic pub /cmd_vel geometry_msgs/Twist '{linear: {x: 0.15}}' -r 3
+
+  RViz 中可以看到实时地图。遥控停下 5 秒后小车自动切回超声波避障。
+
+
+五、全自主探索
+------------------------------------------------------
+
+  ▸ V2 模式（推荐 — 轻量，无需 move_base）:
+    bash scripts/run.sh     # 选择 5
+    # 或:
+    source scripts/setup_env.sh
+    roslaunch orbbec_gemini_slam zystm32_auto_v2.launch
+
+  ▸ V1 模式（完整 — explore_lite + move_base）:
+    bash scripts/run.sh     # 选择 6
+    # 或:
+    source scripts/setup_env.sh
+    roslaunch orbbec_gemini_slam zystm32_auto_explore.launch
+
+
+六、导航（已有地图）
+------------------------------------------------------
+
+  bash scripts/run.sh     # 选择 7
+  # 在 RViz 中用 "2D Nav Goal" 点击目标点
+
+
+七、常用串口命令
+------------------------------------------------------
+
+  F <0-100>    前进
+  B <0-100>    后退
+  L <0-100>    左转
+  R <0-100>    右转
+  SL <0-100>   原地左旋
+  SR <0-100>   原地右旋
+  S            停止
+  G <0-180>    舵机角度 (90=前方, 175=左, 5=右)
+  D            超声波测距
+  A            切到自主避障模式
+  M            切到手动模式
+  H            帮助
+
+
+八、烧录新固件
+------------------------------------------------------
+
+  # 编辑 firmware/USER/main.c
+
+  # 编译 + 烧录
+  cd firmware/USER && make flash
+
+  # 或通过菜单:
+  bash scripts/run.sh     # 选择 9
+
+
+九、故障排查
+------------------------------------------------------
+
+  ▸ STM32 没反应:
+    - bash scripts/run.sh test  → 检查串口是否存在
+    - 用 screen /dev/ttyUSB0 115200 发 H 确认通信
+    - 检查 USB 线、电池开关
+
+  ▸ /dev/ttyUSB0 不存在:
+    - 拔插 STM32 USB 线
+    - 检查: ls /dev/serial/by-id/
+
+  ▸ rosrun 报 "package not found":
+    source scripts/setup_env.sh    # 自动 source 两个环境
+
+  ▸ ROS 桥接连不上 /dev/ttyUSB0:
+    cd ros_ws/src/orbbec_gemini_slam/scripts
+    bash test_ros_bridge.sh        # systemd-run 绕过权限
+
+  ▸ 小车乱动/不停:
+    - 看 LED: D4亮=AUTO避障中, D3亮=MANUAL等待指令
+    - 按一下 KEY 或发 M 回车切到手动
+    - 紧急停车: 发 S 回车
+
+  ▸ 烧录报 "Failed to init device":
+    - 先停掉占用串口的进程（如 ROS 桥接），再 make flash
+
+  ▸ catkin_make 失败:
+    bash install.sh               # 重新检查依赖并编译
