@@ -1,10 +1,10 @@
 <launch>
     <!--
-        ZYSTM32-A1 SLAM 一键启动
+        STM32-SLAM-Robot SLAM 一键启动
         Intel RealSense D435 + RTAB-Map RGB-D SLAM + STM32 串口桥接
         
         Usage:
-          roslaunch orbbec_gemini_slam zystm32_slam.launch
+          roslaunch orbbec_gemini_slam stm32_slam.launch
         
         默认开启键盘遥控（手动建图模式）
     -->

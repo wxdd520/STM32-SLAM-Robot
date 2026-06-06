@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ZYSTM32-A1 一键烧录（免拨跳线帽）
+STM32-SLAM-Robot 一键烧录（免拨跳线帽）
 通过 CH340 的 RTS/DTR 自动控制 STM32 进入/退出 bootloader
 """
 
@@ -12,7 +12,7 @@ import os
 import glob
 
 # ── 配置 ──────────────────────────────────────────────
-BIN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "zystm32_a1_slam.bin")
+BIN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "stm32_slam_robot.bin")
 FLASH_ADDR = "0x08000000"
 STM32FLASH_BIN = "/usr/bin/stm32flash"
 
@@ -60,7 +60,7 @@ def exit_bootloader(port_name):
 # ── 主流程 ─────────────────────────────────────────────
 def main():
     print("=" * 55)
-    print("  ZYSTM32-A1 一键烧录 (免跳线帽)")
+    print("  STM32-SLAM-Robot 一键烧录 (免跳线帽)")
     print("=" * 55)
     print()
 

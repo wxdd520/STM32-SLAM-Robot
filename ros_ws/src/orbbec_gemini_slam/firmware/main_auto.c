@@ -1,5 +1,5 @@
 /*******************************************************************************
- * ZYSTM32-A1 全自主分工会作版固件
+ * STM32-SLAM-Robot 全自主分工会作版固件
  *
  * 架构：
  *   ROS 上位机通过串口发高级指令（F/B/L/R/SL/SR/S）
@@ -169,7 +169,7 @@ static void process_command(void)
             break;
 
         case 'H':  // 帮助
-            printf("=== ZYSTM32-A1 Auto Explore ===\r\n");
+            printf("=== STM32-SLAM-Robot Auto Explore ===\r\n");
             printf("F/B/L/R/SL/SR/S  speed 0-100\r\n");
             printf("G angle 0-180 | D distance | H help\r\n");
             printf("Safety: IR+US avoid enabled\r\n");
@@ -295,7 +295,7 @@ int main(void)
     TIM5_PWM_Init(9999, 143);               // 舵机 PWM 50Hz
     ZYSTM32_brake(500);                     // 初始刹车
 
-    printf("\r\n=== ZYSTM32-A1 Auto Explore ===\r\n");
+    printf("\r\n=== STM32-SLAM-Robot Auto Explore ===\r\n");
     printf("ROS + STM32 Safety Layer Ready\r\n");
     printf("Send 'H' for help.\r\n");
 

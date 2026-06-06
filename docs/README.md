@@ -1,4 +1,4 @@
-# ZYSTM32-A1 SLAM 移植到 Intel NX — 完整指南
+# STM32-SLAM-Robot SLAM 移植到 Intel NX — 完整指南
 
 ## 📦 本文件夹内容
 
@@ -78,7 +78,7 @@ roscore &
 
 # 启动 SLAM（一条命令启动全部）
 source setup_orbbec_slam.sh
-roslaunch zystm32_slam.launch
+roslaunch stm32_slam.launch
 
 # 没有 launch 文件的话，可以逐个启动：
 # 终端1: roscore
@@ -141,7 +141,7 @@ rostopic pub --once /cmd_vel geometry_msgs/Twist '{linear: {x: 0.2}, angular: {z
 把这个文件路径告诉 Reasonix，然后说：
 
 ```
-我正在把 ZYSTM32-A1 SLAM 项目移植到新的 Intel NX 设备上。
+我正在把 STM32-SLAM-Robot SLAM 项目移植到新的 Intel NX 设备上。
 请先读取 ~/桌面/ZYSTM32-SLAM-移植包/Docs/STM32-ROS-测试命令.txt
 了解完整操作流程，然后帮我检查环境依赖是否安装完毕。
 ```
@@ -167,7 +167,7 @@ python3 ~/桌面/ZYSTM32-SLAM-移植包/Tools/test_motor.py
 # 5. 启动 ROS + SLAM
 roscore &
 source ~/桌面/ZYSTM32-SLAM-移植包/ROS脚本/setup_orbbec_slam.sh
-roslaunch ~/桌面/ZYSTM32-SLAM-移植包/ROS脚本/zystm32_slam.launch
+roslaunch ~/桌面/ZYSTM32-SLAM-移植包/ROS脚本/stm32_slam.launch
 
 # 6. 键盘遥控建图（WASD 方向，空格停止，ESC 退出）
 # （launch 已自动启动键盘遥控）

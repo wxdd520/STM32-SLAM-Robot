@@ -1,6 +1,6 @@
 #!/bin/bash
 # =========================================================
-# ZYSTM32-A1 环境设置脚本
+# STM32-SLAM-Robot 环境设置脚本
 # 用法: source scripts/setup_env.sh   (项目根目录下)
 # =========================================================
 
@@ -25,11 +25,11 @@ else
     (cd "$CATKIN_WS" && catkin_make) && source "$CATKIN_WS/devel/setup.bash"
 fi
 
-echo "✅ ZYSTM32-A1 环境已就绪"
+echo "✅ STM32-SLAM-Robot 环境已就绪"
 echo "   项目目录: $PROJECT_DIR"
 echo "   工作空间: $CATKIN_WS"
 echo ""
 echo "   快捷命令:"
 echo "     bash scripts/run.sh                    # 交互式菜单"
-echo "     roslaunch orbbec_gemini_slam zystm32_slam.launch   # SLAM"
+echo "     roslaunch orbbec_gemini_slam stm32_slam.launch   # SLAM"
 echo "     cd firmware/USER && make flash         # 烧录固件"

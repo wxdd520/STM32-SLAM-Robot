@@ -1,5 +1,5 @@
 ###############################################################################
-# Makefile for ZYSTM32-A1 SLAM firmware
+# Makefile for STM32-SLAM-Robot firmware
 # Target: STM32F103VE (High Density), arm-none-eabi-gcc
 # 
 # Usage:
@@ -9,7 +9,7 @@
 ###############################################################################
 
 # Project name
-TARGET = zystm32_a1_slam
+TARGET = stm32_slam_robot
 
 # Toolchain
 PREFIX = arm-none-eabi-

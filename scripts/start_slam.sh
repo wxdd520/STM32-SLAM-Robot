@@ -1,6 +1,6 @@
 #!/bin/bash
 # =========================================================
-# ZYSTM32-A1 一键启动 SLAM
+# STM32-SLAM-Robot 一键启动 SLAM
 # =========================================================
 
 # 自动检测项目根目录
@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo "================================================"
-echo "  ZYSTM32-A1 SLAM 一键启动"
+echo "  STM32-SLAM-Robot SLAM 一键启动"
 echo "================================================"
 echo ""
 echo "启动项："
@@ -30,4 +30,4 @@ if ! pgrep -x roscore > /dev/null 2>&1; then
 fi
 
 # 启动 SLAM
-roslaunch orbbec_gemini_slam zystm32_slam.launch
+roslaunch orbbec_gemini_slam stm32_slam.launch

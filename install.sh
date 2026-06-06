@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================
-#  ZYSTM32-A1 一键部署脚本
+#  STM32-SLAM-Robot 一键部署脚本
 #  用法: bash install.sh
 #
 #  功能:
@@ -28,7 +28,7 @@ CATKIN_WS="$PROJECT_DIR/ros_ws"
 
 echo ""
 echo -e "${BOLD}${CYN}============================================================${NC}"
-echo -e "${BOLD}${CYN}  ZYSTM32-A1 一键部署${NC}"
+echo -e "${BOLD}${CYN}  STM32-SLAM-Robot 一键部署${NC}"
 echo -e "${BOLD}${CYN}  项目目录: $PROJECT_DIR${NC}"
 echo -e "${BOLD}${CYN}============================================================${NC}"
 echo ""
@@ -137,7 +137,7 @@ if command -v arm-none-eabi-gcc &>/dev/null; then
     cd "$FIRMWARE_DIR"
     make clean > /dev/null 2>&1
     if make all 2>&1 | tail -5; then
-        SIZE=$(arm-none-eabi-size zystm32_a1_slam.elf 2>/dev/null | tail -1 | awk '{print $1}')
+        SIZE=$(arm-none-eabi-size stm32_slam_robot.elf 2>/dev/null | tail -1 | awk '{print $1}')
         ok "固件编译成功 (${SIZE} bytes text)"
     else
         fail "固件编译失败"
@@ -174,7 +174,7 @@ info "验证部署..."
 
 PASS=true
 
-[ -f "$FIRMWARE_DIR/zystm32_a1_slam.bin" ] && ok "固件 .bin" || { fail "固件 .bin"; PASS=false; }
+[ -f "$FIRMWARE_DIR/stm32_slam_robot.bin" ] && ok "固件 .bin" || { fail "固件 .bin"; PASS=false; }
 [ -f "$CATKIN_WS/devel/setup.bash" ]       && ok "ROS devel" || { fail "ROS devel"; PASS=false; }
 [ -f "$CATKIN_WS/devel/lib/orbbec_gemini_slam/stm32_serial_bridge.py" ] && ok "桥接节点" || { fail "桥接节点"; PASS=false; }
 [ -f "$CATKIN_WS/devel/lib/orbbec_gemini_slam/keyboard_teleop.py" ]     && ok "键盘遥控" || { fail "键盘遥控"; PASS=false; }
@@ -201,5 +201,5 @@ echo "     bash scripts/run.sh           # 交互式菜单"
 echo ""
 echo "  4. 或直接启动:"
 echo "     source scripts/setup_env.sh"
-echo "     roslaunch orbbec_gemini_slam zystm32_slam.launch"
+echo "     roslaunch orbbec_gemini_slam stm32_slam.launch"
 echo ""

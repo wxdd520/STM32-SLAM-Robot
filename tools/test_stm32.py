@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ZYSTM32 串口测试 — 单次打开连接，发送命令，读取回复"""
+"""STM32-SLAM-Robot 串口测试 — 单次打开连接，发送命令，读取回复"""
 import serial, time, glob, os
 
 def find_port():

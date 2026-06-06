@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ZYSTM32 电机直连测试 — 绕过ROS，直接控制电机"""
+"""STM32-SLAM-Robot 电机直连测试 — 绕过ROS，直接控制电机"""
 import serial, time, glob, os
 
 def find_port():

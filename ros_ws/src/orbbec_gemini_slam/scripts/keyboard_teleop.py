@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-键盘遥控 - ZYSTM32-A1 SLAM
+键盘遥控 - STM32-SLAM-Robot SLAM
 按住即走，松开即停，30Hz 持续发送命令
 """
 
@@ -27,7 +27,7 @@ class KeyboardTeleop:
         self.active_key = None
 
         print("\n========================================")
-        print("  ZYSTM32-A1 键盘遥控")
+        print("  STM32-SLAM-Robot 键盘遥控")
         print("========================================")
         print("  W/S   前进/后退")
         print("  A/D   左转/右转")

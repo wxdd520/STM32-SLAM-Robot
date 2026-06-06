@@ -1,5 +1,5 @@
 /*******************************************************************************
- * ZYSTM32-A1 超声波+舵机避障 + ROS 串口指令
+ * STM32-SLAM-Robot 超声波+舵机避障 + ROS 串口指令
  *
  * 架构：
  *   默认模式：超声波舵机扫描（前/左/右）+ 自动避障
@@ -237,7 +237,7 @@ static void process_command(void)
             break;
 
         case 'H':
-            printf("=== ZYSTM32-A1 SONIC+ROS ===\r\n");
+            printf("=== STM32-SLAM-Robot SONIC+ROS ===\r\n");
             printf("F/B/L/R/SL/SR/S  speed 0-100\r\n");
             printf("G angle 0-180 | D: distance\r\n");
             printf("A: auto avoid | M: manual | H: help\r\n");
@@ -379,7 +379,7 @@ int main(void)
     update_leds();  // 初始：D4亮=AUTO
     beep_ms(150);
 
-    printf("\r\n=== ZYSTM32-A1 SONIC+ROS ===\r\n");
+    printf("\r\n=== STM32-SLAM-Robot SONIC+ROS ===\r\n");
     printf("Mode: AUTO (D4 LED on)\r\n");
     printf("Press KEY to switch | M/A/H serial commands\r\n");
 

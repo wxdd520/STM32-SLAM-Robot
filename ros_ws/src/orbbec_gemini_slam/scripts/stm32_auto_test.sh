@@ -1,13 +1,13 @@
 #!/bin/bash
 # ============================================================
-# zystm32_auto_test.sh — ZYSTM32-A1 全自主探索 测试脚本 V2
+# stm32_auto_test.sh — STM32-SLAM-Robot 全自主探索 测试脚本 V2
 # ============================================================
 # 分工会作模式：ROS 做 SLAM + 探索决策，STM32 做底层安全避障
 # 
 # 用法:
-#   ./zystm32_auto_test.sh              # 全自主探索+建图 (V2)
-#   ./zystm32_auto_test.sh check        # 仅检查环境（不启动）
-#   ./zystm32_auto_test.sh keyboard     # 手动建图模式（带键盘）
+#   ./stm32_auto_test.sh              # 全自主探索+建图 (V2)
+#   ./stm32_auto_test.sh check        # 仅检查环境（不启动）
+#   ./stm32_auto_test.sh keyboard     # 手动建图模式（带键盘）
 # ============================================================
 
 set -e
@@ -27,7 +27,7 @@ header(){ echo -e "\n${BOLD}${CYN}=== $* ===${NC}\n"; }
 
 MODE="${1:-explore}"
 
-header "ZYSTM32-A1 全自主探索 V2（分工会作模式）"
+header "STM32-SLAM-Robot 全自主探索 V2（分工会作模式）"
 
 # ============================================================
 # 1. 环境检查
@@ -107,12 +107,12 @@ check_file() {
 }
 
 check_file "scripts/simple_explorer.py"
-check_file "launch/zystm32_auto_v2.launch"
+check_file "launch/stm32_auto_v2.launch"
 check_file "launch/d435i_rtabmap.launch"
 check_file "scripts/stm32_serial_bridge.py"
 
 if command -v xmllint &>/dev/null; then
-    xmllint --noout "$PKG_DIR/launch/zystm32_auto_v2.launch" && ok "launch XML 合法"
+    xmllint --noout "$PKG_DIR/launch/stm32_auto_v2.launch" && ok "launch XML 合法"
 fi
 
 if [ "$MODE" = "check" ]; then
@@ -122,8 +122,8 @@ if [ "$MODE" = "check" ]; then
     echo "  ┌─ ROS: RTAB-Map SLAM + simple_explorer.py（往哪儿走）"
     echo "  └─ STM32: 电机驱动 + 红外/超声波避障安全层"
     echo ""
-    echo "  ./zystm32_auto_test.sh          # 全自主探索"
-    echo "  ./zystm32_auto_test.sh keyboard # 手动建图"
+    echo "  ./stm32_auto_test.sh          # 全自主探索"
+    echo "  ./stm32_auto_test.sh keyboard # 手动建图"
     echo ""
     exit 0
 fi
@@ -164,13 +164,13 @@ case "$MODE" in
         info "simple_explorer.py 读取 RTAB-Map 前沿 → 发 /cmd_vel"
         info "STM32 红外+超声波底层避障，ROS 只管往哪儿走"
         echo ""
-        roslaunch orbbec_gemini_slam zystm32_auto_v2.launch
+        roslaunch orbbec_gemini_slam stm32_auto_v2.launch
         ;;
     keyboard)
         header "🚀 手动遥控建图"
         info "W/S: 前进/后退  A/D: 左转/右转  Q/E: 原地旋  空格: 停"
         echo ""
-        roslaunch orbbec_gemini_slam zystm32_slam.launch
+        roslaunch orbbec_gemini_slam stm32_slam.launch
         ;;
     *)
         fail "未知模式: $MODE"

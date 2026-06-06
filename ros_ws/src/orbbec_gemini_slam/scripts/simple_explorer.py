@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-simple_explorer.py — ZYSTM32-A1 全自主探索控制器
+simple_explorer.py — STM32-SLAM-Robot 全自主探索控制器
 ===================================================
 分工会作：ROS 只做"往哪儿走"的决策，STM32 负责底层避障安全。
 

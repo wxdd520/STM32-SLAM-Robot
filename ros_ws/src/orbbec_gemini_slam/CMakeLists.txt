@@ -30,7 +30,7 @@ install(DIRECTORY launch/
 
 # 安装测试脚本
 install(PROGRAMS
-  scripts/zystm32_auto_test.sh
+  scripts/stm32_auto_test.sh
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

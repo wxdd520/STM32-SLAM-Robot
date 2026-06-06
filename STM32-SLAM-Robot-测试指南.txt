@@ -1,12 +1,12 @@
 ============================================================
-  ROS-AutoNav — 全自主探索测试指南
-  硬件平台: ZYSTM32-A1 亚克力四驱底盘
+  STM32-SLAM-Robot — 全自主探索测试指南
+  硬件平台: STM32-SLAM-Robot 四驱底盘
   最后更新: 2026-06-06
 ============================================================
 
 前置条件：
-  git clone <repo-url> ZYSTM32-A1
-  cd ZYSTM32-A1
+  git clone <repo-url> STM32-SLAM-Robot
+  cd STM32-SLAM-Robot
   bash install.sh          ← 一键部署（安装依赖+编译固件+编译ROS）
 
 所有命令均在项目根目录下执行。
@@ -123,13 +123,13 @@
     bash scripts/run.sh     # 选择 5
     # 或:
     source scripts/setup_env.sh
-    roslaunch orbbec_gemini_slam zystm32_auto_v2.launch
+    roslaunch orbbec_gemini_slam stm32_auto_v2.launch
 
   ▸ V1 模式（完整 — explore_lite + move_base）:
     bash scripts/run.sh     # 选择 6
     # 或:
     source scripts/setup_env.sh
-    roslaunch orbbec_gemini_slam zystm32_auto_explore.launch
+    roslaunch orbbec_gemini_slam stm32_auto_explore.launch
 
 
 六、导航（已有地图）

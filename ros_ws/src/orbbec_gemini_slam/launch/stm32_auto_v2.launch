@@ -1,6 +1,6 @@
 <launch>
     <!--
-        ZYSTM32-A1 全自主探索 V2（分工会作模式）
+        STM32-SLAM-Robot 全自主探索 V2（分工会作模式）
         ========================================
         ROS 上位机：SLAM + 探索策略（"往哪儿走"）
         STM32 下位机：电机驱动 + 红外/超声波避障安全层
@@ -10,7 +10,7 @@
         只保留 RTAB-Map + simple_explorer.py。
 
         Usage:
-          roslaunch orbbec_gemini_slam zystm32_auto_v2.launch
+          roslaunch orbbec_gemini_slam stm32_auto_v2.launch
     -->
 
     <!-- ============================== -->

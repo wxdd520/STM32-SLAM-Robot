@@ -1,6 +1,6 @@
-# ROS-AutoNav: STM32 Ultrasonic + ROS SLAM Autonomous Robot 🤖
+# STM32-SLAM-Robot: STM32 Ultrasonic + ROS SLAM Autonomous Robot 🤖
 
-> **ROS-AutoNav** — 基于 ZYSTM32-A1 底盘的低成本 ROS 自主导航机器人
+> **STM32-SLAM-Robot** — 基于 STM32 底盘的低成本 ROS 自主导航机器人
 >
 > STM32F103VC 超声波避障底盘 + Intel RealSense D435 + ROS Noetic RTAB-Map SLAM
 >
@@ -34,7 +34,7 @@
 
 ## 🎯 项目概述
 
-**ROS-AutoNav** 是一个**入门级 ROS 自主导航机器人平台**，旨在用最低成本实现：
+**STM32-SLAM-Robot** 是一个**入门级 ROS 自主导航机器人平台**，旨在用最低成本实现：
 
 - ✅ **超声波自主避障** — 舵机扫描前/左/右三个方向，自动避障前进
 - ✅ **ROS 串口遥控** — 通过 `/cmd_vel` 话题控制小车运动
@@ -44,7 +44,7 @@
 
 ### 项目背景
 
-**ROS-AutoNav** 基于智宇科技 ZYSTM32-A1 亚克力四驱机器人底盘改造，将原始的单片机例程升级为完整的 ROS + SLAM 自主导航系统，实现了从"遥控小车"到"自主建图机器人"的跨越。
+**STM32-SLAM-Robot** 基于 STM32 底盘改造，将原始的单片机例程升级为完整的 ROS + SLAM 自主导航系统，实现了从"遥控小车"到"自主建图机器人"的跨越。
 
 ---
 
@@ -148,8 +148,8 @@ keyboard_teleop.py ──→ /cmd_vel (geometry_msgs/Twist)
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/your-username/ZYSTM32-A1.git
-cd ZYSTM32-A1
+git clone https://github.com/your-username/STM32-SLAM-Robot.git
+cd STM32-SLAM-Robot
 ```
 
 ### 2. 一键部署
@@ -181,7 +181,7 @@ bash scripts/start_slam.sh
 
 # 方式三：手动
 source scripts/setup_env.sh
-roslaunch orbbec_gemini_slam zystm32_slam.launch
+roslaunch orbbec_gemini_slam stm32_slam.launch
 ```
 
 ### `run.sh` 快速命令
@@ -214,14 +214,14 @@ make clean && make    # 编译
 
 ```
    text	   data	    bss	    dec	    hex	filename
-  16604	    136	   2432	  19172	  4ae4	zystm32_a1_slam.elf
+  16604	    136	   2432	  19172	  4ae4	stm32_slam_robot.elf
 ```
 
 生成文件：
-- `zystm32_a1_slam.elf` — ELF 格式（调试用）
-- `zystm32_a1_slam.bin` — 纯二进制（烧录用）
-- `zystm32_a1_slam.hex` — Intel HEX 格式
-- `zystm32_a1_slam.map` — 符号映射表
+- `stm32_slam_robot.elf` — ELF 格式（调试用）
+- `stm32_slam_robot.bin` — 纯二进制（烧录用）
+- `stm32_slam_robot.hex` — Intel HEX 格式
+- `stm32_slam_robot.map` — 符号映射表
 
 ### 一键烧录（推荐）
 
@@ -245,7 +245,7 @@ make flash
 # 3. 重新插上 USB
 # 4. 按一下 RESET 键
 # 5. 手动烧录
-stm32flash -w zystm32_a1_slam.bin -v -g 0x08000000 /dev/ttyUSB0
+stm32flash -w stm32_slam_robot.bin -v -g 0x08000000 /dev/ttyUSB0
 
 # 6. 断 USB，BOOT0 恢复为 GND
 # 7. 重新插 USB，按 RESET
@@ -277,11 +277,11 @@ stm32flash -w zystm32_a1_slam.bin -v -g 0x08000000 /dev/ttyUSB0
 
 | 文件 | 用途 |
 |------|------|
-| `zystm32_slam.launch` | **一键启动** — 串口桥接 + D435 + RTAB-Map + 键盘遥控 |
+| `stm32_slam.launch` | **一键启动** — 串口桥接 + D435 + RTAB-Map + 键盘遥控 |
 | `d435i_rtabmap.launch` | D435 + RTAB-Map RGB-D SLAM 核心配置 |
 | `d435i_preview.launch` | D435 相机预览（不含 SLAM） |
-| `zystm32_auto_explore.launch` | 全自主探索模式（含 explore_lite） |
-| `zystm32_nav.launch` | 导航模式（move_base + 路径规划） |
+| `stm32_auto_explore.launch` | 全自主探索模式（含 explore_lite） |
+| `stm32_nav.launch` | 导航模式（move_base + 路径规划） |
 | `gemini_rtabmap.launch` | Orbbec Gemini 335L 双目 SLAM |
 | `gemini_stereo_only.launch` | Gemini 双目预览 |
 
@@ -363,7 +363,7 @@ bash scripts/start_slam.sh
 
 # 或手动启动
 source scripts/setup_env.sh
-roslaunch orbbec_gemini_slam zystm32_slam.launch
+roslaunch orbbec_gemini_slam stm32_slam.launch
 ```
 
 **键盘控制：**
@@ -452,7 +452,7 @@ D\r\n       → 测距，回复 D 234 (234mm)
 
 ## 🔄 模式切换
 
-ZYSTM32-A1 支持三种模式切换方式：
+STM32-SLAM-Robot 支持三种模式切换方式：
 
 | 方式 | 切到 MANUAL | 切到 AUTO |
 |------|------------|----------|
@@ -471,7 +471,7 @@ ZYSTM32-A1 支持三种模式切换方式：
 ## 📁 项目文件结构
 
 ```
-ZYSTM32-A1/
+STM32-SLAM-Robot/
 ├── install.sh                    ← 一键部署脚本（安装依赖+编译）
 ├── firmware/                     ← STM32 下位机固件
 │   ├── USER/                     ← 用户代码入口
@@ -523,7 +523,7 @@ ZYSTM32-A1/
 │
 ├── README.md                     ← 本文件
 ├── LICENSE                       ← 许可证
-└── ZYSTM32-A1-测试指南.txt       ← 快速测试指南
+└── STM32-SLAM-Robot-测试指南.txt       ← 快速测试指南
 ```
 
 ---
@@ -623,7 +623,7 @@ STM32 标准外设库 (STM32F10x_FWLib) 版权归 STMicroelectronics 所有。
 
 ## 🙏 致谢
 
-- 智宇科技 — ZYSTM32-A1 亚克力四驱机器人底盘
+- 智宇科技 — STM32 底盘平台
 - Intel RealSense — D435 深度相机
 - ROS Community — Robot Operating System
 - RTAB-Map Team — Real-Time Appearance-Based Mapping
@@ -632,5 +632,5 @@ STM32 标准外设库 (STM32F10x_FWLib) 版权归 STMicroelectronics 所有。
 ---
 
 <div align="center">
-  <sub>ROS-AutoNav — Built with ❤️ for robotics enthusiasts</sub>
+  <sub>STM32-SLAM-Robot — Built with ❤️ for robotics enthusiasts</sub>
 </div>

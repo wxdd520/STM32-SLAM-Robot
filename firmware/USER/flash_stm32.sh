@@ -1,14 +1,14 @@
 #!/bin/bash
 ###############################################################################
-# STM32 Flash Script — ZYSTM32-A1 SLAM 小车
+# STM32 Flash Script — STM32-SLAM-Robot
 # 自动检测串口、验证 bootloader 模式、烧录固件，带详细报错和调试信息
 ###############################################################################
 
 set -euo pipefail
 
 # ── 配置 ──────────────────────────────────────────────────────
-BIN_FILE="./zystm32_a1_slam.bin"
-HEX_FILE="./zystm32_a1_slam.hex"
+BIN_FILE="./stm32_slam_robot.bin"
+HEX_FILE="./stm32_slam_robot.hex"
 BAUD=115200
 FLASH_ADDR=0x08000000
 RED='\033[0;31m'
@@ -176,7 +176,7 @@ echo
 
 # ── 5. 显示结果摘要 ────────────────────────────────────────────
 msg "固件信息:"
-SIZE_TEXT=$(arm-none-eabi-size zystm32_a1_slam.elf 2>/dev/null | tail -1 || echo "N/A")
+SIZE_TEXT=$(arm-none-eabi-size stm32_slam_robot.elf 2>/dev/null | tail -1 || echo "N/A")
 echo "      ${SIZE_TEXT}"
 
 echo

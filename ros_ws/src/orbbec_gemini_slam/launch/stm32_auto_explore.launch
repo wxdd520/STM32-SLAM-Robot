@@ -1,37 +1,39 @@
 <launch>
     <!--
-        ZYSTM32-A1 纯导航模式（已有地图，不建图）
-        =========================================
-        在 RViz 中用 "2D Nav Goal" 点击目标点。
+        STM32-SLAM-Robot 全自主探索 + 建图
+        ==============================
+        D435 + RTAB-Map SLAM + move_base + explore_lite
+
+        启动后小车自动探索环境并建图，无需键盘遥控。
 
         Usage:
-          roslaunch orbbec_gemini_slam zystm32_nav.launch
+          roslaunch orbbec_gemini_slam stm32_auto_explore.launch
     -->
 
-    <arg name="serial_port"  default="auto"/>
-    <arg name="serial_baud"  default="115200"/>
-    <arg name="rviz"         default="true"/>
+    <!-- ============================== -->
+    <!-- 参数                           -->
+    <!-- ============================== -->
+    <arg name="serial_port"     default="auto"/>
+    <arg name="serial_baud"     default="115200"/>
+    <arg name="keyboard"        default="false"/>
+    <arg name="rviz"            default="true"/>
 
     <!-- ============================== -->
     <!-- 1. STM32 串口桥接              -->
     <!-- ============================== -->
     <node name="stm32_bridge" pkg="orbbec_gemini_slam" type="stm32_serial_bridge.py" output="screen">
-        <param name="port" value="$(arg serial_port)"/>
-        <param name="baud" value="$(arg serial_baud)"/>
+        <param name="port"      value="$(arg serial_port)"/>
+        <param name="baud"      value="$(arg serial_baud)"/>
     </node>
 
     <!-- ============================== -->
-    <!-- 2. D435 + RTAB-Map 定位模式     -->
+    <!-- 2. D435 + RTAB-Map SLAM        -->
     <!-- ============================== -->
     <include file="$(find orbbec_gemini_slam)/launch/d435i_rtabmap.launch">
         <arg name="rtabmap_args" value=""/>
         <arg name="rtabmap_viz"  value="false"/>
         <arg name="rviz"         value="false"/>
     </include>
-
-    <!-- 设为定位模式（不建新地图） -->
-    <node pkg="rosservice" type="rosservice" name="set_localization"
-          args="call --wait /rtabmap/set_mode 1"/>
 
     <!-- ============================== -->
     <!-- 3. /rtabmap/grid_map → /map    -->
@@ -44,6 +46,7 @@
     <node name="depthimage_to_laserscan" pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" output="screen">
         <remap from="image"         to="/camera/aligned_depth_to_color/image_raw"/>
         <remap from="camera_info"   to="/camera/color/camera_info"/>
+        <remap from="scan"          to="/scan"/>
         <param name="output_frame_id" value="camera_link"/>
         <param name="range_min"       value="0.30"/>
         <param name="range_max"       value="4.50"/>
@@ -54,17 +57,32 @@
     <!-- 5. move_base 导航               -->
     <!-- ============================== -->
     <node name="move_base" pkg="move_base" type="move_base" output="screen">
+        <!-- 通用参数同时加载到 global 和 local 命名空间 -->
         <rosparam file="$(find orbbec_gemini_slam)/config/costmap_common.yaml" command="load" ns="global_costmap"/>
         <rosparam file="$(find orbbec_gemini_slam)/config/costmap_common.yaml" command="load" ns="local_costmap"/>
+        <!-- 各自独立的参数 -->
         <rosparam file="$(find orbbec_gemini_slam)/config/costmap_global.yaml"  command="load"/>
         <rosparam file="$(find orbbec_gemini_slam)/config/costmap_local.yaml"   command="load"/>
+        <!-- move_base 自身参数 -->
         <rosparam file="$(find orbbec_gemini_slam)/config/move_base.yaml"       command="load"/>
     </node>
 
     <!-- ============================== -->
-    <!-- 6. RViz（含 2D Nav Goal 工具）   -->
+    <!-- 6. explore_lite 全自主探索       -->
+    <!-- ============================== -->
+    <node name="explore" pkg="explore_lite" type="explore" output="screen">
+        <rosparam file="$(find orbbec_gemini_slam)/config/explore_lite.yaml" command="load"/>
+    </node>
+
+    <!-- ============================== -->
+    <!-- 7. RViz 可视化                   -->
     <!-- ============================== -->
     <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz"
           args="-d $(find orbbec_gemini_slam)/config/gemini_rtabmap.rviz"/>
+
+    <!-- ============================== -->
+    <!-- 8. 键盘遥控（默认关闭）           -->
+    <!-- ============================== -->
+    <node if="$(arg keyboard)" name="keyboard_teleop" pkg="orbbec_gemini_slam" type="keyboard_teleop.py" output="screen"/>
 
 </launch>

@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================
-#  ZYSTM32-A1 运行脚本（统一入口）
+#  STM32-SLAM-Robot 运行脚本（统一入口）
 #  用法: bash scripts/run.sh [模式]
 #
 #  模式:
@@ -110,7 +110,7 @@ open_new_terminal() {
 show_menu() {
     echo ""
     echo -e "${BOLD}${CYN}╔══════════════════════════════════════════════════╗${NC}"
-    echo -e "${BOLD}${CYN}║         ZYSTM32-A1 运行菜单                      ║${NC}"
+    echo -e "${BOLD}${CYN}║         STM32-SLAM-Robot 运行菜单                ║${NC}"
     echo -e "${BOLD}${CYN}╠══════════════════════════════════════════════════╣${NC}"
     echo -e "${BOLD}${CYN}║                                                  ║${NC}"
     echo -e "${BOLD}${CYN}║  ${GRN}1${CYN}  串口直连测试    (screen)              ${CYN}║${NC}"
@@ -198,7 +198,7 @@ mode_slam() {
     ensure_roscore
     echo -e "${GRN}启动 SLAM 建图...${NC}"
     open_new_terminal "键盘遥控 (WASDQE)" "rosrun orbbec_gemini_slam keyboard_teleop.py"
-    roslaunch orbbec_gemini_slam zystm32_slam.launch keyboard:=false
+    roslaunch orbbec_gemini_slam stm32_slam.launch keyboard:=false
 }
 
 mode_auto_v2() {
@@ -206,27 +206,27 @@ mode_auto_v2() {
     ensure_roscore
     echo -e "${GRN}启动全自主探索 V2 (SLAM + simple_explorer)...${NC}"
     open_new_terminal "键盘遥控 (WASDQE)" "rosrun orbbec_gemini_slam keyboard_teleop.py"
-    roslaunch orbbec_gemini_slam zystm32_auto_v2.launch keyboard:=false
+    roslaunch orbbec_gemini_slam stm32_auto_v2.launch keyboard:=false
 }
 
 mode_explore_v1() {
     setup_env
     ensure_roscore
     echo -e "${GRN}启动全自主探索 V1 (explore_lite + move_base)...${NC}"
-    roslaunch orbbec_gemini_slam zystm32_auto_explore.launch
+    roslaunch orbbec_gemini_slam stm32_auto_explore.launch
 }
 
 mode_nav() {
     setup_env
     ensure_roscore
     echo -e "${GRN}启动导航模式...${NC}"
-    roslaunch orbbec_gemini_slam zystm32_nav.launch
+    roslaunch orbbec_gemini_slam stm32_nav.launch
 }
 
 mode_test() {
     setup_env
     echo ""
-    echo -e "${BOLD}${CYN}════ ZYSTM32-A1 快速功能验证 ════${NC}"
+    echo -e "${BOLD}${CYN}════ STM32-SLAM-Robot 快速功能验证 ════${NC}"
     echo ""
 
     echo -e "${CYN}[1/5] ROS 环境${NC}"
@@ -250,13 +250,13 @@ mode_test() {
 
     echo -e "${CYN}[4/5] Launch 文件${NC}"
     local launch_dir="$PROJECT_DIR/ros_ws/src/orbbec_gemini_slam/launch"
-    for f in zystm32_slam.launch zystm32_auto_v2.launch d435i_rtabmap.launch zystm32_nav.launch; do
+    for f in stm32_slam.launch stm32_auto_v2.launch d435i_rtabmap.launch stm32_nav.launch; do
         [ -f "$launch_dir/$f" ] && ok "$f" || echo -e "  ${RED}✗ $f${NC}"
     done
     echo ""
 
     echo -e "${CYN}[5/5] STM32 固件${NC}"
-    [ -f "$FIRMWARE_DIR/zystm32_a1_slam.bin" ] && ok "zystm32_a1_slam.bin" || echo -e "  ${YLW}⚠ 未编译 (cd firmware/USER && make)${NC}"
+    [ -f "$FIRMWARE_DIR/stm32_slam_robot.bin" ] && ok "stm32_slam_robot.bin" || echo -e "  ${YLW}⚠ 未编译 (cd firmware/USER && make)${NC}"
 
     echo ""
     echo -e "${BOLD}${GRN}════ 验证完成 ════${NC}"

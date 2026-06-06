@@ -1,4 +1,4 @@
-# ZYSTM32-A1 STM32 烧录流程（Linux 一键免跳线帽）
+# STM32-SLAM-Robot STM32 烧录流程（Linux 一键免跳线帽）
 
 ## 🔥 一键烧录（推荐，无需拨跳线帽）
 

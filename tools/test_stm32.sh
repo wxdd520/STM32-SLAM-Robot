@@ -1,5 +1,5 @@
 #!/bin/bash
-# ZYSTM32 串口测试 — 清缓冲 + 发送命令 + 读取回复
+# STM32-SLAM-Robot 串口测试 — 清缓冲 + 发送命令 + 读取回复
 set -euo pipefail
 
 find_port() {
