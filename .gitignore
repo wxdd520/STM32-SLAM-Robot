@@ -1,0 +1,32 @@
+# STM32 firmware build artifacts
+firmware/USER/build/
+firmware/USER/*.elf
+firmware/USER/*.bin
+firmware/USER/*.hex
+firmware/USER/*.map
+firmware/USER/*.o
+
+# ROS workspace build/devel/install
+ros_ws/build/
+ros_ws/devel/
+ros_ws/install/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+# ROS
+.ros/
+*.bag

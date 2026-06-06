@@ -1,0 +1,34 @@
+<launch>
+    <!--
+        Intel RealSense D435 相机测试
+        仅启动相机，验证图像和深度是否正常。
+    -->
+    <arg name="camera"              default="camera"/>
+    <arg name="serial_no"           default=""/>
+    <arg name="color_width"         default="848"/>
+    <arg name="color_height"        default="480"/>
+    <arg name="color_fps"           default="30"/>
+    <arg name="depth_fps"           default="30"/>
+
+    <!-- 启动相机（对齐深度到彩色） -->
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="camera"                    value="$(arg camera)"/>
+        <arg name="serial_no"                 value="$(arg serial_no)"/>
+        <arg name="align_depth"               value="true"/>
+        <arg name="enable_sync"               value="true"/>
+        <arg name="enable_depth"              value="true"/>
+        <arg name="enable_color"              value="true"/>
+        <arg name="enable_infra"              value="false"/>
+        <arg name="enable_gyro"               value="false"/>
+        <arg name="enable_accel"              value="false"/>
+        <arg name="enable_pointcloud"         value="false"/>
+        <arg name="color_width"               value="$(arg color_width)"/>
+        <arg name="color_height"              value="$(arg color_height)"/>
+        <arg name="color_fps"                 value="$(arg color_fps)"/>
+        <arg name="depth_fps"                 value="$(arg depth_fps)"/>
+    </include>
+
+    <!-- 图像预览 -->
+    <node name="rqt_image_view" pkg="rqt_image_view" type="rqt_image_view"
+          args="/$(arg camera)/color/image_raw"/>
+</launch>

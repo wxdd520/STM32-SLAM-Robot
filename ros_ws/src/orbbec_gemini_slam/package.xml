@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>orbbec_gemini_slam</name>
+  <version>1.0.0</version>
+  <description>Orbbec Gemini 335L stereo camera driver + RTAB-Map SLAM launch files</description>
+
+  <maintainer email="user@example.com">wxd</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rospy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+
+  <exec_depend>rtabmap_ros</exec_depend>
+  <exec_depend>image_view</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>move_base</exec_depend>
+  <exec_depend>explore_lite</exec_depend>
+  <exec_depend>depthimage_to_laserscan</exec_depend>
+  <exec_depend>topic_tools</exec_depend>
+  <exec_depend>dwa_local_planner</exec_depend>
+
+  <export>
+  </export>
+</package>

@@ -1,0 +1,57 @@
+<launch>
+    <!--
+        ZYSTM32-A1 全自主探索 V2（分工会作模式）
+        ========================================
+        ROS 上位机：SLAM + 探索策略（"往哪儿走"）
+        STM32 下位机：电机驱动 + 红外/超声波避障安全层
+
+        对比 V1：去掉 move_base、costmap、explore_lite、
+        depthimage_to_laserscan、topic_tools relay 全部重依赖。
+        只保留 RTAB-Map + simple_explorer.py。
+
+        Usage:
+          roslaunch orbbec_gemini_slam zystm32_auto_v2.launch
+    -->
+
+    <!-- ============================== -->
+    <!-- 参数                           -->
+    <!-- ============================== -->
+    <arg name="serial_port"     default="auto"/>
+    <arg name="serial_baud"     default="115200"/>
+    <arg name="keyboard"        default="false"/>
+    <arg name="rviz"            default="true"/>
+
+    <!-- ============================== -->
+    <!-- 1. STM32 串口桥接              -->
+    <!-- ============================== -->
+    <node name="stm32_bridge" pkg="orbbec_gemini_slam" type="stm32_serial_bridge.py" output="screen">
+        <param name="port" value="$(arg serial_port)"/>
+        <param name="baud" value="$(arg serial_baud)"/>
+    </node>
+
+    <!-- ============================== -->
+    <!-- 2. D435 + RTAB-Map SLAM        -->
+    <!-- ============================== -->
+    <include file="$(find orbbec_gemini_slam)/launch/d435i_rtabmap.launch">
+        <arg name="rtabmap_args"    value=""/>
+        <arg name="rtabmap_viz"     value="false"/>
+        <arg name="rviz"            value="false"/>
+    </include>
+
+    <!-- ============================== -->
+    <!-- 3. 简单探索控制器               -->
+    <!-- ============================== -->
+    <node name="simple_explorer" pkg="orbbec_gemini_slam" type="simple_explorer.py" output="screen"/>
+
+    <!-- ============================== -->
+    <!-- 4. RViz 可视化                  -->
+    <!-- ============================== -->
+    <node if="$(arg rviz)" name="rviz" pkg="rviz" type="rviz"
+          args="-d $(find orbbec_gemini_slam)/config/gemini_rtabmap.rviz"/>
+
+    <!-- ============================== -->
+    <!-- 5. 键盘遥控（默认关闭）          -->
+    <!-- ============================== -->
+    <node if="$(arg keyboard)" name="keyboard_teleop" pkg="orbbec_gemini_slam" type="keyboard_teleop.py" output="screen"/>
+
+</launch>

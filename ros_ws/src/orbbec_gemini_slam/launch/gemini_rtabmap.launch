@@ -1,0 +1,114 @@
+<launch>
+    <!--
+        Orbbec Gemini 335L + RTAB-Map 双目 SLAM 启动文件
+        启动相机 + 双目视觉里程计 + SLAM + 可视化
+    -->
+    <arg name="left_dev"    default="/dev/video4"/>
+    <arg name="right_dev"   default="/dev/video6"/>
+    <arg name="width"       default="640"/>
+    <arg name="height"      default="400"/>
+    <arg name="fps"         default="30"/>
+    <arg name="equalize"    default="true"/>
+    <arg name="left_calib"  default="$(find orbbec_gemini_slam)/config/gemini_left.yaml"/>
+    <arg name="right_calib" default="$(find orbbec_gemini_slam)/config/gemini_right.yaml"/>
+
+    <!-- RTAB-Map 参数 -->
+    <arg name="args"        default="-d --delete_db_on_start"/>
+    <arg name="rtabmap_viz" default="true"/>
+    <arg name="rviz"        default="true"/>
+
+    <!-- ============================== -->
+    <!-- 1. 相机节点                      -->
+    <!-- ============================== -->
+    <node name="gemini_stereo_node" pkg="orbbec_gemini_slam" type="orbbec_stereo_node.py" output="screen">
+        <param name="left_dev"    value="$(arg left_dev)"/>
+        <param name="right_dev"   value="$(arg right_dev)"/>
+        <param name="width"       value="$(arg width)"/>
+        <param name="height"      value="$(arg height)"/>
+        <param name="fps"         value="$(arg fps)"/>
+        <param name="equalize"    value="$(arg equalize)"/>
+        <param name="left_calib"  value="$(arg left_calib)"/>
+        <param name="right_calib" value="$(arg right_calib)"/>
+        <remap from="~left/image_raw"   to="/gemini/left/image_raw"/>
+        <remap from="~right/image_raw"  to="/gemini/right/image_raw"/>
+        <remap from="~left/camera_info"  to="/gemini/left/camera_info"/>
+        <remap from="~right/camera_info" to="/gemini/right/camera_info"/>
+    </node>
+
+    <!-- ============================== -->
+    <!-- 2. 双目视觉里程计                 -->
+    <!-- ============================== -->
+    <node pkg="rtabmap_odom" type="stereo_odometry" name="stereo_odometry" output="screen" args="$(arg args)">
+        <param name="frame_id"          value="gemini_optical_frame"/>
+        <param name="odom_frame_id"     value="odom"/>
+        <param name="publish_tf"        value="true"/>
+        <param name="wait_imu_to_init"  value="false"/>
+        <param name="Vis/MinInliers"    value="10"/>
+        <param name="Vis/FeatureType"   value="6"/>     <!-- 6=ORB, 0=SIFT -->
+        <param name="Vis/MaxFeatures"   value="500"/>
+        <param name="Stereo/MaxDisparity" value="160"/>
+
+        <remap from="left/image_rect"   to="/gemini/left/image_raw"/>
+        <remap from="right/image_rect"  to="/gemini/right/image_raw"/>
+        <remap from="left/camera_info"  to="/gemini/left/camera_info"/>
+        <remap from="right/camera_info" to="/gemini/right/camera_info"/>
+    </node>
+
+    <!-- ============================== -->
+    <!-- 3. RTAB-Map SLAM 核心            -->
+    <!-- ============================== -->
+    <node pkg="rtabmap_slam" type="rtabmap" name="rtabmap" output="screen" args="$(arg args)">
+        <param name="frame_id"              value="gemini_optical_frame"/>
+        <param name="map_frame_id"          value="map"/>
+        <param name="odom_frame_id"         value="odom"/>
+        <param name="subscribe_stereo"      value="true"/>
+        <param name="subscribe_odom_info"   value="true"/>
+        <param name="wait_imu_to_init"      value="false"/>
+        <param name="approx_sync"           value="true"/>
+        <param name="approx_sync_max_interval" value="0.01"/>
+
+        <!-- 建图参数 -->
+        <param name="Mem/STMSize"           value="30"/>
+        <param name="RGBD/LinearUpdate"     value="0.1"/>
+        <param name="RGBD/AngularUpdate"    value="0.1"/>
+        <param name="Rtabmap/CreateIntermediateNodes" value="true"/>
+        <param name="Rtabmap/DetectionRate" value="2"/>
+
+        <!-- 回环检测 -->
+        <param name="RGBD/ProximityMaxGraphDepth" value="0"/>
+        <param name="RGBD/ProximityMaxTime"       value="-1"/>
+
+        <!-- 2D 占用格栅地图 -->
+        <param name="Grid/CellSize"         value="0.05"/>
+        <param name="Grid/MaxObstacleHeight" value="2.0"/>
+
+        <remap from="left/image_rect"   to="/gemini/left/image_raw"/>
+        <remap from="right/image_rect"  to="/gemini/right/image_raw"/>
+        <remap from="left/camera_info"  to="/gemini/left/camera_info"/>
+        <remap from="right/camera_info" to="/gemini/right/camera_info"/>
+        <remap from="odom"              to="/stereo_odometry/odom"/>
+    </node>
+
+    <!-- ============================== -->
+    <!-- 4. RTAB-Map 可视化              -->
+    <!-- ============================== -->
+    <node if="$(arg rtabmap_viz)" pkg="rtabmap_viz" type="rtabmap_viz" name="rtabmap_viz" output="screen" args="$(arg args)">
+        <param name="frame_id"              value="gemini_optical_frame"/>
+        <param name="subscribe_stereo"      value="true"/>
+        <param name="subscribe_odom_info"   value="true"/>
+        <param name="approx_sync"           value="true"/>
+
+        <remap from="left/image_rect"   to="/gemini/left/image_raw"/>
+        <remap from="right/image_rect"  to="/gemini/right/image_raw"/>
+        <remap from="left/camera_info"  to="/gemini/left/camera_info"/>
+        <remap from="right/camera_info" to="/gemini/right/camera_info"/>
+        <remap from="odom"              to="/stereo_odometry/odom"/>
+    </node>
+
+    <!-- ============================== -->
+    <!-- 5. RViz 可视化                  -->
+    <!-- ============================== -->
+    <node if="$(arg rviz)" pkg="rviz" type="rviz" name="rviz" output="screen"
+          args="-d $(find orbbec_gemini_slam)/config/gemini_rtabmap.rviz"/>
+
+</launch>

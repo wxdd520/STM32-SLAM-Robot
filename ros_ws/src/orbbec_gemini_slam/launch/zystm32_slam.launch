@@ -1,0 +1,30 @@
+<launch>
+    <!--
+        ZYSTM32-A1 SLAM 一键启动
+        Intel RealSense D435 + RTAB-Map RGB-D SLAM + STM32 串口桥接
+        
+        Usage:
+          roslaunch orbbec_gemini_slam zystm32_slam.launch
+        
+        默认开启键盘遥控（手动建图模式）
+    -->
+
+    <arg name="serial_port"     default="auto"/>
+    <arg name="serial_baud"     default="115200"/>
+    <arg name="cmd_rate"        default="20"/>
+    <arg name="keyboard"        default="true"/>
+    <arg name="rviz"            default="true"/>
+
+    <node name="stm32_bridge" pkg="orbbec_gemini_slam" type="stm32_serial_bridge.py" output="screen">
+        <param name="port"      value="$(arg serial_port)"/>
+        <param name="baud"      value="$(arg serial_baud)"/>
+        <param name="cmd_rate"  value="$(arg cmd_rate)"/>
+    </node>
+
+    <include file="$(find orbbec_gemini_slam)/launch/d435i_rtabmap.launch"/>
+
+    <node if="$(arg keyboard)" name="keyboard_teleop" pkg="orbbec_gemini_slam" type="keyboard_teleop.py" output="screen"/>
+
+    <node name="ultrasonic_printer" pkg="orbbec_gemini_slam" type="print_ultrasonic.py" output="screen" if="false"/>
+
+</launch>

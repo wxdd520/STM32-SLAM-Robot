@@ -1,0 +1,42 @@
+<launch>
+    <!--
+        Orbbec Gemini 335L 双目相机测试启动文件
+        仅启动相机节点并显示图像，用于验证相机是否正常工作。
+    -->
+    <arg name="left_dev"    default="/dev/video4"/>
+    <arg name="right_dev"   default="/dev/video6"/>
+    <arg name="width"       default="640"/>
+    <arg name="height"      default="400"/>
+    <arg name="fps"         default="30"/>
+    <arg name="equalize"    default="false"/>
+    <arg name="left_calib"  default="$(find orbbec_gemini_slam)/config/gemini_left.yaml"/>
+    <arg name="right_calib" default="$(find orbbec_gemini_slam)/config/gemini_right.yaml"/>
+
+    <!-- 相机节点 -->
+    <node name="gemini_stereo_node" pkg="orbbec_gemini_slam" type="orbbec_stereo_node.py" output="screen">
+        <param name="left_dev"    value="$(arg left_dev)"/>
+        <param name="right_dev"   value="$(arg right_dev)"/>
+        <param name="width"       value="$(arg width)"/>
+        <param name="height"      value="$(arg height)"/>
+        <param name="fps"         value="$(arg fps)"/>
+        <param name="equalize"    value="$(arg equalize)"/>
+        <param name="left_calib"  value="$(arg left_calib)"/>
+        <param name="right_calib" value="$(arg right_calib)"/>
+        <remap from="~left/image_raw"  to="/gemini/left/image_raw"/>
+        <remap from="~right/image_raw" to="/gemini/right/image_raw"/>
+        <remap from="~left/camera_info"  to="/gemini/left/camera_info"/>
+        <remap from="~right/camera_info" to="/gemini/right/camera_info"/>
+    </node>
+
+    <!-- 图像显示（测试用） -->
+    <node name="image_view_left" pkg="image_view" type="image_view" respawn="false">
+        <param name="autosize" value="true"/>
+        <remap from="image" to="/gemini/left/image_raw"/>
+    </node>
+
+    <node name="image_view_right" pkg="image_view" type="image_view" respawn="false">
+        <param name="autosize" value="true"/>
+        <remap from="image" to="/gemini/right/image_raw"/>
+    </node>
+
+</launch>
