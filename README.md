@@ -1,8 +1,10 @@
-# ZYSTM32-A1: ROS SLAM Robot with STM32 Ultrasonic Avoidance 🤖
+# ROS-AutoNav: STM32 Ultrasonic + ROS SLAM Autonomous Robot 🤖
 
-> **ZYSTM32-A1 亚克力四驱底盘 + STM32F103VC 超声波避障 + ROS Noetic RTAB-Map SLAM**
+> **ROS-AutoNav** — 基于 ZYSTM32-A1 底盘的低成本 ROS 自主导航机器人
 >
-> 一款低成本、开箱即用的 ROS SLAM 机器人：STM32 负责底层电机驱动与超声波避障，上位机运行 RTAB-Map RGB-D SLAM 实时建图，支持键盘遥控、全自主探索和导航。
+> STM32F103VC 超声波避障底盘 + Intel RealSense D435 + ROS Noetic RTAB-Map SLAM
+>
+> 开箱即用：一键部署 → 烧录固件 → 键盘遥控建图 → 全自主探索导航
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Ubuntu%2020.04-blue)
@@ -32,7 +34,7 @@
 
 ## 🎯 项目概述
 
-ZYSTM32-A1 是一个**入门级 ROS SLAM 机器人平台**，旨在用最低成本实现：
+**ROS-AutoNav** 是一个**入门级 ROS 自主导航机器人平台**，旨在用最低成本实现：
 
 - ✅ **超声波自主避障** — 舵机扫描前/左/右三个方向，自动避障前进
 - ✅ **ROS 串口遥控** — 通过 `/cmd_vel` 话题控制小车运动
@@ -42,7 +44,7 @@ ZYSTM32-A1 是一个**入门级 ROS SLAM 机器人平台**，旨在用最低成�
 
 ### 项目背景
 
-本项目基于智宇科技 ZYSTM32-A1 亚克力四驱机器人底盘改造，将原始的单片机例程升级为完整的 ROS + SLAM 系统，实现了从"遥控小车"到"自主建图机器人"的跨越。
+**ROS-AutoNav** 基于智宇科技 ZYSTM32-A1 亚克力四驱机器人底盘改造，将原始的单片机例程升级为完整的 ROS + SLAM 自主导航系统，实现了从"遥控小车"到"自主建图机器人"的跨越。
 
 ---
 
@@ -630,5 +632,5 @@ STM32 标准外设库 (STM32F10x_FWLib) 版权归 STMicroelectronics 所有。
 ---
 
 <div align="center">
-  <sub>Built with ❤️ for robotics enthusiasts</sub>
+  <sub>ROS-AutoNav — Built with ❤️ for robotics enthusiasts</sub>
 </div>
